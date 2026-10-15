@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robin Hood – Il Bandito di Sherwood</title>
+  <link rel="stylesheet" href="css/stile.css">
+</head>
+<body>
+  <!-- Qui dentro Phaser crea il "canvas" su cui disegna il gioco -->
+  <div id="gioco"></div>
+
+  <!--
+    ORDINE DI CARICAMENTO (importante!)
+    Usiamo normali <script> e non i moduli ES: così il gioco funziona
+    anche aprendo index.html con un doppio clic, senza server.
+    Ogni file può usare ciò che è stato caricato PRIMA di lui.
+  -->
+
+  <!-- 1. La libreria Phaser 3 (salvata in locale, niente CDN) -->
+  <script src="lib/phaser.min.js"></script>
+
+  <!-- 2. Configurazione: solo dati -->
+  <script src="src/config/costanti.js"></script>
+  <script src="src/config/difficolta.js"></script>
+  <script src="src/config/storia.js"></script>
+  <script src="src/config/missioni.js"></script>
+  <script src="src/config/negozio.js"></script>
+  <script src="src/config/mappe.js"></script>
+
+  <!-- 3. Sistemi: servizi usati da tutto il gioco -->
+  <script src="src/sistemi/Salvataggio.js"></script>
+  <script src="src/sistemi/StatoPartita.js"></script>
+  <script src="src/sistemi/Suoni.js"></script>
+  <script src="src/sistemi/GraficaPixel.js"></script>
+  <script src="src/sistemi/GraficaTile.js"></script>
+  <script src="src/sistemi/Controlli.js"></script>
+  <script src="src/sistemi/Griglia.js"></script>
+  <script src="src/sistemi/CostruttoreLivello.js"></script>
+  <script src="src/sistemi/Allarme.js"></script>
+  <script src="src/sistemi/Punteggio.js"></script>
+  <script src="src/sistemi/Interfaccia.js"></script>
+
+  <!-- 4. Entità: personaggi e oggetti -->
+  <script src="src/entita/Freccia.js"></script>
+  <script src="src/entita/Arco.js"></script>
+  <script src="src/entita/Giocatore.js"></script>
+  <script src="src/entita/ConoVisivo.js"></script>
+  <script src="src/entita/Guardia.js"></script>
+  <script src="src/entita/LittleJohn.js"></script>
+  <script src="src/entita/Carro.js"></script>
+  <script src="src/entita/Sceriffo.js"></script>
+  <script src="src/entita/Bersaglio.js"></script>
+  <script src="src/entita/Oggetto.js"></script>
+
+  <!-- 5. Scene: le varie schermate -->
+  <script src="src/scene/AvvioScene.js"></script>
+  <script src="src/scene/MenuScene.js"></script>
+  <script src="src/scene/DiarioScene.js"></script>
+  <script src="src/scene/CaricamentoScene.js"></script>
+  <script src="src/scene/AccampamentoScene.js"></script>
+  <script src="src/scene/MissioneBase.js"></script>
+  <script src="src/scene/MissioneConvoglio.js"></script>
+  <script src="src/scene/MissionePrigione.js"></script>
+  <script src="src/scene/MissioneTorneo.js"></script>
+  <script src="src/scene/MissioneFinale.js"></script>
+  <script src="src/scene/HUDScene.js"></script>
+  <script src="src/scene/PausaScene.js"></script>
+  <script src="src/scene/RiepilogoScene.js"></script>
+  <script src="src/scene/FinaleScene.js"></script>
+
+  <!-- 6. Avvio del gioco -->
+  <script src="src/main.js"></script>
+</body>
+</html>
