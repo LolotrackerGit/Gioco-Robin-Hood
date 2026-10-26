@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robin Hood - Versione semplificata</title>
+  <link rel="stylesheet" href="css/stile.css">
+</head>
+<body>
+  <div id="gioco"></div>
+
+  <!-- Ordine di caricamento: ogni file può usare quelli caricati PRIMA -->
+  <script src="lib/phaser.min.js"></script>
+
+  <!-- Configurazione -->
+  <script src="src/config/accessibilita.js"></script>
+  <script src="src/config/costanti.js"></script>
+  <script src="src/config/testi.js"></script>
+  <script src="src/config/mappa.js"></script>
+
+  <!-- Sistemi -->
+  <script src="src/sistemi/Voce.js"></script>
+  <script src="src/sistemi/Suoni.js"></script>
+  <script src="src/sistemi/GraficaPixel.js"></script>
+  <script src="src/sistemi/GraficaTile.js"></script>
+  <script src="src/sistemi/Griglia.js"></script>
+  <script src="src/sistemi/Livello.js"></script>
+  <script src="src/sistemi/Interfaccia.js"></script>
+
+  <!-- Entità -->
+  <script src="src/entita/Eroe.js"></script>
+  <script src="src/entita/Nemico.js"></script>
+  <script src="src/entita/Freccia.js"></script>
+  <script src="src/entita/Bersaglio.js"></script>
+  <script src="src/entita/FrecciaGuida.js"></script>
+
+  <!-- Scene -->
+  <script src="src/scene/AvvioScene.js"></script>
+  <script src="src/scene/TitoloScene.js"></script>
+  <script src="src/scene/PersonaggiScene.js"></script>
+  <script src="src/scene/CutsceneScene.js"></script>
+  <script src="src/scene/LivelloScene.js"></script>
+  <script src="src/scene/HUDLivelloScene.js"></script>
+  <script src="src/scene/FineScene.js"></script>
+
+  <script src="src/main.js"></script>
+</body>
+</html>
