@@ -36,10 +36,12 @@ class AccampamentoScene extends Phaser.Scene {
 
     // Punti con cui si può interagire
     this.puntiInterazione = [];
+    this.cartelliMissione = {}; // posizione del cartello di ogni missione (per la freccia guida)
     const missioniHub = [['1', 'convoglio'], ['2', 'prigione'], ['3', 'torneo'], ['4', 'finale']];
     missioniHub.forEach(([carattere, id]) => {
       const pt = p[carattere][0];
       const cartello = this.add.image(pt.x, pt.y - 4, 'cartello').setDepth(100 + pt.y);
+      this.cartelliMissione[id] = pt;
       const completata = Partita.stato.missioni[id] && Partita.stato.missioni[id].completata;
       if (completata) cartello.setTint(0x8fd16a);
       if (id === 'finale' && !Partita.finaleSbloccato()) cartello.setTint(0x777777);
@@ -51,6 +53,7 @@ class AccampamentoScene extends Phaser.Scene {
     this.puntiInterazione.push({ x: tuck.x, y: tuck.y, testo: 'Fra Tuck (negozio)', azione: () => this.pannelloNegozio() });
 
     const forziere = this.add.image(p['B'][0].x, p['B'][0].y, 'forziere').setDepth(100 + p['B'][0].y);
+    this.forziere = forziere;
     this.puntiInterazione.push({ x: forziere.x, y: forziere.y, testo: 'Forziere del bottino', azione: () => this.pannelloBottino() });
 
     this.add.image(p['D'][0].x, p['D'][0].y, 'libro').setDepth(100 + p['D'][0].y);
@@ -77,6 +80,9 @@ class AccampamentoScene extends Phaser.Scene {
     cam.setBounds(0, 0, livello.larghezzaPx, livello.altezzaPx);
     cam.startFollow(this.robin, true, 0.12, 0.12);
     cam.setRoundPixels(true);
+    // freccia guida (accessibilità): creata prima della telecamera UI, così fa parte del mondo
+    this.guida = new FrecciaGuida(this);
+
     // la seconda telecamera (UI) non deve vedere il mondo
     this.camUI = this.cameras.add(0, 0, COSTANTI.LARGHEZZA, COSTANTI.ALTEZZA);
     this.camUI.ignore(this.children.list.slice());
@@ -143,6 +149,7 @@ class AccampamentoScene extends Phaser.Scene {
       return;
     }
     this.robin.aggiorna(dt, this.controlli);
+    this.guida.aggiorna(dt, this.robin, this.obiettivoGuida());
 
     // interazione più vicina
     let vicino = null;
@@ -162,6 +169,7 @@ class AccampamentoScene extends Phaser.Scene {
   avviso(testo) {
     if (this.testoAvviso) this.testoAvviso.destroy();
     this.testoAvviso = this.ui(Interfaccia.testo(this, 480, 64, testo, 18, COSTANTI.CSS.oro, { align: 'center' }).setOrigin(0.5));
+    Interfaccia.leggi(testo);
     this.tweens.add({ targets: this.testoAvviso, alpha: 0, delay: 1800, duration: 400 });
   }
 
@@ -196,7 +204,17 @@ class AccampamentoScene extends Phaser.Scene {
     return this.aggiungi(Interfaccia.pulsante(this, 480, y, etichetta || 'Chiudi', () => this.chiudiPannello(), { larghezza: 180, altezza: 32, dimensione: 16 }));
   }
 
+  // Freccia guida all'accampamento: prima il forziere (se c'è bottino),
+  // poi il cartello della prossima missione da fare
+  obiettivoGuida() {
+    if (Partita.stato.oroDaDividere > 0) return this.forziere;
+    const daFare = ['convoglio', 'prigione', 'torneo'].find((id) => !Partita.stato.missioni[id].completata);
+    if (Partita.finaleSbloccato() && (!daFare || Partita.missioniCompletate() >= 3)) return this.cartelliMissione.finale;
+    return daFare ? this.cartelliMissione[daFare] : this.cartelliMissione.finale;
+  }
+
   dialogo(chi, testo) {
+    Interfaccia.leggi(chi + '. ' + testo);
     const { y } = this.apriPannello(chi, 640, 220);
     this.aggiungi(Interfaccia.testo(this, 480, y + 105, testo, 16, COSTANTI.CSS.pergamena, { align: 'center', larghezza: 580, interlinea: 6 }).setOrigin(0.5));
     this.pulsanteChiudi(y + 190, 'Va bene');
@@ -206,6 +224,7 @@ class AccampamentoScene extends Phaser.Scene {
     const m = MISSIONI[id];
     const { x, y } = this.apriPannello(m.titolo, 680, 380);
     const bloccata = id === 'finale' && !Partita.finaleSbloccato();
+    Interfaccia.leggi(m.titolo + '. ' + m.descrizione + (bloccata ? ' Missione ancora bloccata.' : ''));
     this.aggiungi(Interfaccia.testo(this, x + 30, y + 60, m.descrizione, 16, COSTANTI.CSS.pergamena, { larghezza: 620, interlinea: 5 }));
     this.aggiungi(Interfaccia.testo(this, x + 30, y + 140, 'Come affrontarla:', 16, COSTANTI.CSS.oro, {}));
     m.modi.forEach((modo, i) => {
@@ -226,7 +245,13 @@ class AccampamentoScene extends Phaser.Scene {
   partiPer(id) {
     const m = MISSIONI[id];
     Partita.salva();
-    Interfaccia.vaiA(this, 'Caricamento', { destinazione: m.scena, titolo: m.titolo, suggerimenti: m.modi });
+    // prima la cutscene che spiega la missione, poi il caricamento, poi la missione
+    Interfaccia.vaiA(this, 'Cutscene', {
+      quadri: CUTSCENE_MISSIONI[id].inizio,
+      titolo: m.titolo,
+      poi: 'Caricamento',
+      datiPoi: { destinazione: m.scena, titolo: m.titolo, suggerimenti: m.modi }
+    });
   }
 
   pannelloNegozio() {
@@ -347,10 +372,15 @@ class AccampamentoScene extends Phaser.Scene {
   }
 
   pannelloPausa() {
-    const { y } = this.apriPannello('Accampamento', 380, 260);
+    const { y } = this.apriPannello('Accampamento', 380, 310);
     this.aggiungi(Interfaccia.pulsante(this, 480, y + 85, 'Riprendi', () => this.chiudiPannello()));
     this.aggiungi(Interfaccia.pulsante(this, 480, y + 135, 'Diario di Robin', () => { this.chiudiPannello(); this.apriDiario(); }));
-    this.aggiungi(Interfaccia.pulsante(this, 480, y + 185, 'Salva ed esci al menu', () => {
+    this.aggiungi(Interfaccia.pulsante(this, 480, y + 185, 'Impostazioni', () => {
+      this.chiudiPannello();
+      this.scene.pause();
+      this.scene.launch('Impostazioni', { sopra: 'Accampamento' });
+    }));
+    this.aggiungi(Interfaccia.pulsante(this, 480, y + 235, 'Salva ed esci al menu', () => {
       Partita.salva();
       Suoni.fermaMusica();
       this.scene.start('Menu');

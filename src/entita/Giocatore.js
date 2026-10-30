@@ -46,6 +46,8 @@ class Giocatore extends Phaser.Physics.Arcade.Sprite {
     // ---- movimento ----
     const dir = controlli.movimento();
     this.inMovimento = dir.x !== 0 || dir.y !== 0;
+    // da quanto tempo Robin è fermo (serve alla freccia guida)
+    this.fermoDa = this.inMovimento ? 0 : (this.fermoDa || 0) + dt;
     this.staCorrendo = this.inMovimento && controlli.corsa() && !(this.arco && this.arco.inCarica);
 
     let velocita = COSTANTI.VEL_CAMMINO;
@@ -140,7 +142,7 @@ class Giocatore extends Phaser.Physics.Arcade.Sprite {
     this.dannoSubito += quantita;
     this.invulnerabile = 0.9;
     Suoni.suona('danno');
-    this.scene.cameras.main.shake(120, 0.006);
+    Impostazioni.scuoti(this.scene.cameras.main, 120, 0.006);
 
     // lampeggia di rosso
     this.setTint(0xff5555);

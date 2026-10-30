@@ -74,7 +74,8 @@ class Guardia extends Phaser.Physics.Arcade.Sprite {
     this.ricaricaAttacco -= dt;
     const visibilita = this.calcolaVisibilita(robin);
     const velocitaSospetto = Partita.diff().velocitaSospetto * this.scene.allarme.moltiplicatore() *
-      (Partita.stato.potenziamenti.mantello ? 0.75 : 1);
+      (Partita.stato.potenziamenti.mantello ? 0.75 : 1) *
+      (Impostazioni.valori.guardieLente ? 0.7 : 1); // accessibilità: guardie meno attente
 
     // Una guardia tranquilla che vede un compagno a terra dà l'allarme... di sospetto
     if (this.stato === 'pattuglia' || this.stato === 'sospetto') this.controllaCorpi();
@@ -423,6 +424,8 @@ class Guardia extends Phaser.Physics.Arcade.Sprite {
       this.strada = null;
     }
 
+    // accessibilità: con "guardie lente" tutte le guardie camminano più piano
+    if (Impostazioni.valori.guardieLente) velocita *= 0.7;
     const angolo = Math.atan2(meta.y - this.y, meta.x - this.x);
     this.setVelocity(Math.cos(angolo) * velocita, Math.sin(angolo) * velocita);
     this.direzione = Phaser.Math.Angle.RotateTo(this.direzione, angolo, 6 * dt);

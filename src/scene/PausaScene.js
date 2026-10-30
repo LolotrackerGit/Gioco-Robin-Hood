@@ -15,19 +15,24 @@ class PausaScene extends Phaser.Scene {
   create() {
     this.scene.bringToTop(); // la pausa va disegnata sopra la missione e l'HUD
     this.add.rectangle(480, 270, 960, 540, 0x000000, 0.65);
-    Interfaccia.pannello(this, 300, 110, 360, 330, 'legno');
-    Interfaccia.titolo(this, 480, 150, 'Pausa', 36);
+    Interfaccia.pannello(this, 300, 90, 360, 380, 'legno');
+    Interfaccia.titolo(this, 480, 130, 'Pausa', 36);
+    Interfaccia.leggi('Pausa');
 
     const pulsanti = [
-      Interfaccia.pulsante(this, 480, 215, 'Riprendi', () => this.riprendi()),
-      Interfaccia.pulsante(this, 480, 265, 'Diario di Robin', () => {
+      Interfaccia.pulsante(this, 480, 195, 'Riprendi', () => this.riprendi()),
+      Interfaccia.pulsante(this, 480, 245, 'Diario di Robin', () => {
         this.scene.pause();
         this.scene.launch('Diario', { sopra: 'Pausa' });
       }),
-      Interfaccia.pulsante(this, 480, 315, 'Ritirati all\'accampamento', () => this.esci('Accampamento')),
-      Interfaccia.pulsante(this, 480, 365, 'Menu principale', () => this.esci('Menu'))
+      Interfaccia.pulsante(this, 480, 295, 'Impostazioni', () => {
+        this.scene.pause();
+        this.scene.launch('Impostazioni', { sopra: 'Pausa' });
+      }),
+      Interfaccia.pulsante(this, 480, 345, 'Ritirati all\'accampamento', () => this.esci('Accampamento')),
+      Interfaccia.pulsante(this, 480, 395, 'Menu principale', () => this.esci('Menu'))
     ];
-    Interfaccia.testo(this, 480, 412, 'Ritirarsi non fa perdere oro, ma la missione resta da fare.', 12, COSTANTI.CSS.grigio, { align: 'center' }).setOrigin(0.5);
+    Interfaccia.testo(this, 480, 442, 'Ritirarsi non fa perdere oro, ma la missione resta da fare.', 12, COSTANTI.CSS.grigio, { align: 'center' }).setOrigin(0.5);
     Interfaccia.menuTastiera(this, pulsanti);
     this.input.keyboard.on('keydown-ESC', () => this.riprendi());
     this.input.keyboard.on('keydown-P', () => this.riprendi());

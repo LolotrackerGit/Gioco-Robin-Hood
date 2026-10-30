@@ -139,6 +139,7 @@ const GraficaPixel = {
     this.creaPersonaggio(scene, 'tuck', { H: p.S, X: p.s, T: p.b, t: p.B, K: p.w, L: p.b, F: p.B });
     this.creaPersonaggio(scene, 'gisborne', { H: p.k, X: p.k, T: p.B, t: p.k, K: p.a, L: p.k, F: p.k });
     this.creaPersonaggio(scene, 'popolano', { H: p.b, X: p.b, T: p.c, t: p.C, K: p.b, L: p.C, F: p.B });
+    this.creaPersonaggio(scene, 're', { H: p.y, X: p.Y, T: p.r, t: p.R, K: p.y, L: p.N, F: p.k });
     this.creaPersonaggio(scene, 'marian', { H: p.r, X: p.R, T: p.p, t: p.n, K: p.y, L: p.p, F: p.B });
   },
 

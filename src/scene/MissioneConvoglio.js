@@ -129,7 +129,7 @@ class MissioneConvoglio extends MissioneBase {
     this.griglia.imposta(tx - 1, a.ty, 'L');
     this.griglia.imposta(tx, a.ty, 'L');
 
-    this.cameras.main.shake(300, 0.01);
+    Impostazioni.scuoti(this.cameras.main, 300, 0.01);
     Suoni.suona('porta');
     this.emettiRumore(this.tronco.x, this.tronco.y, 220, 0.6);
 
@@ -163,6 +163,12 @@ class MissioneConvoglio extends MissioneBase {
   testoObiettivo() {
     if (this.sacchiRubati < 3) return 'ruba almeno 3 sacchi dal carro (' + this.sacchiRubati + '/3)';
     return 'fuggi dall\'uscita a sud (sacchi: ' + this.sacchiRubati + '/6)';
+  }
+
+  // Freccia guida: prima il retro del carro, poi l'uscita
+  obiettivoGuida() {
+    if (this.sacchiRubati < 3 && !this.carro.arrivato) return this.carro.retro();
+    return this.uscitaPiuVicina();
   }
 
   // Obiettivo speciale: tutti e 6 i sacchi

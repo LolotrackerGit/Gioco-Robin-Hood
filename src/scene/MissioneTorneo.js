@@ -133,6 +133,7 @@ class MissioneTorneo extends Phaser.Scene {
 
   mostraCentro(testo, durata, poi) {
     this.testoCentro.setText(testo).setAlpha(1);
+    Interfaccia.leggi(testo);
     this.time.delayedCall(durata, () => {
       this.testoCentro.setText('');
       if (poi) poi();

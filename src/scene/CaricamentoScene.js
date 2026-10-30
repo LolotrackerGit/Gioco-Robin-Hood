@@ -23,7 +23,10 @@ class CaricamentoScene extends Phaser.Scene {
     Interfaccia.sfondoForesta(this, 0.82);
     Interfaccia.titolo(this, 480, 64, this.titoloTesto, 40);
 
+    // testo da far leggere alla voce (se attiva)
+    let daLeggere = this.titoloTesto + '. ';
     if (this.testoPersonale) {
+      daLeggere += this.testoPersonale;
       Interfaccia.testo(this, 480, 230, this.testoPersonale, 20, COSTANTI.CSS.pergamena,
         { align: 'center', larghezza: 720, interlinea: 8 }).setOrigin(0.5);
     } else {
@@ -31,15 +34,19 @@ class CaricamentoScene extends Phaser.Scene {
       Interfaccia.pannello(this, 140, 112, 680, 150, 'pergamena');
       Interfaccia.testo(this, 480, 140, 'Curiosità storica', 18, '#8a3b2a', { senzaBordo: true, align: 'center' }).setOrigin(0.5);
       const curiosita = Phaser.Utils.Array.GetRandom(CURIOSITA);
+      daLeggere += 'Curiosità storica: ' + curiosita;
       Interfaccia.testo(this, 480, 200, curiosita, 20, COSTANTI.CSS.inchiostro, { senzaBordo: true, align: 'center', larghezza: 620 }).setOrigin(0.5);
     }
 
     // Suggerimenti sulla missione (i diversi modi per completarla)
     if (this.suggerimenti) {
+      daLeggere += ' Come affrontare la missione: ' + this.suggerimenti.join(' ');
       this.suggerimenti.forEach((s, i) => {
         Interfaccia.testo(this, 150, 292 + i * 30, '- ' + s, 17, COSTANTI.CSS.verdeChiaro, { larghezza: 680 });
       });
     }
+
+    Interfaccia.leggi(daLeggere);
 
     // Barra di caricamento: dà il tempo di leggere
     const barraSfondo = this.add.rectangle(480, 440, 400, 12, 0x1b120a);

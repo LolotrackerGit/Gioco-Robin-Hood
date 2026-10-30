@@ -14,6 +14,7 @@
 //   interazioniMissione()  -> azioni speciali con il tasto E
 //   puoUscire()            -> l'uscita è attiva?
 //   testoObiettivo()       -> testo mostrato nell'HUD
+//   obiettivoGuida()       -> punto indicato dalla freccia guida (accessibilità)
 // =============================================================
 
 class MissioneBase extends Phaser.Scene {
@@ -84,6 +85,9 @@ class MissioneBase extends Phaser.Scene {
     // Parte specifica della missione (la scrivono le classi figlie)
     this.preparaMissione();
 
+    // Freccia guida verso l'obiettivo (si attiva nelle impostazioni di accessibilità)
+    this.guida = new FrecciaGuida(this);
+
     // Collisioni delle guardie con i muri
     this.physics.add.collider(this.guardie, livello.strato);
 
@@ -100,6 +104,21 @@ class MissioneBase extends Phaser.Scene {
   interazioniMissione() { return []; }
   puoUscire() { return true; }
   testoObiettivo() { return ''; }
+  obiettivoGuida() { return null; }
+
+  // Il punto d'uscita più vicino a Robin (utile per la freccia guida)
+  uscitaPiuVicina() {
+    let migliore = null;
+    let dMin = Infinity;
+    this.zonaUscita.forEach((p) => {
+      const d = Phaser.Math.Distance.Between(this.robin.x, this.robin.y, p.x, p.y);
+      if (d < dMin) {
+        dMin = d;
+        migliore = p;
+      }
+    });
+    return migliore;
+  }
 
   // ---------------------------------------------------------
   // CREAZIONE DI GUARDIE, OGGETTI ECC.
@@ -211,6 +230,7 @@ class MissioneBase extends Phaser.Scene {
     this.aggiornaInterazioni();
     this.controllaUscita();
     this.disegnaAzioneInCorso();
+    this.guida.aggiorna(dt, this.robin, this.obiettivoGuida());
   }
 
   apriPausa() {

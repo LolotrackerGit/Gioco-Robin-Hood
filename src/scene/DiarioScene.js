@@ -65,6 +65,7 @@ class DiarioScene extends Phaser.Scene {
     this.testoPeriodo.setText(p.periodo);
     this.testoStoria.setText(p.testo);
     this.testoNumero.setText('Pagina ' + (this.pagina + 1) + ' di ' + DIARIO.length);
+    Interfaccia.leggi(p.titolo + '. ' + p.periodo + '. ' + p.testo);
   }
 
   chiudi() {

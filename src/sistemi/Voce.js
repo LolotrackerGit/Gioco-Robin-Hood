@@ -7,8 +7,9 @@
 //       Voce.parla('Ciao!', { poi: fn })   -> chiama fn quando ha finito
 //       Voce.ripeti()                      -> rilegge l'ultima frase
 //
-// Nota per Safari: la voce funziona solo dopo il primo clic
-// dell'utente. Per questo il gioco inizia con "Clicca per iniziare".
+// Si attiva da Impostazioni > Accessibilità > Sintesi vocale.
+// Nota per Safari: la voce funziona solo dopo un clic dell'utente
+// (per questo viene preparata quando si preme "Gioca").
 // =============================================================
 
 const Voce = {
@@ -18,7 +19,8 @@ const Voce = {
   idParlato: 0,   // numero che cambia a ogni nuova frase (serve per ignorare le frasi vecchie)
 
   inizializza() {
-    if (!this.disponibile) return;
+    if (!this.disponibile || this.inizializzata) return;
+    this.inizializzata = true;
     const scegli = () => {
       const voci = window.speechSynthesis.getVoices();
       this.voceItaliana =
@@ -33,13 +35,13 @@ const Voce = {
   },
 
   attiva() {
-    return this.disponibile && Accessibilita.valori.sintesiVocale;
+    return this.disponibile && Impostazioni.valori.sintesiVocale;
   },
 
   // Tempo stimato per leggere una frase (serve se la voce è spenta
   // o se il browser non avvisa quando ha finito di parlare)
   durataStimata(testo) {
-    const velocita = Accessibilita.valori.velocitaVoce || 1;
+    const velocita = Impostazioni.valori.velocitaVoce || 1;
     return (900 + testo.length * 65) / velocita;
   },
 
@@ -70,7 +72,7 @@ const Voce = {
     const frase = new SpeechSynthesisUtterance(this.pulisci(testo));
     frase.lang = 'it-IT';
     if (this.voceItaliana) frase.voice = this.voceItaliana;
-    frase.rate = Accessibilita.valori.velocitaVoce;
+    frase.rate = Impostazioni.valori.velocitaVoce;
     frase.volume = 1;
     frase.onend = fine;
     frase.onerror = fine;

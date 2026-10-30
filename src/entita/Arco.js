@@ -32,6 +32,8 @@ class Arco {
       d += Math.min(0.25, (this.tempoTeso - COSTANTI.TEMPO_TREMORE) * 0.12);
     }
     if (this.giocatore.inMovimento) d += 0.04;
+    // accessibilità: con la mira assistita la freccia va quasi dritta
+    if (Impostazioni.valori.miraAssistita) d *= 0.3;
     return d;
   }
 

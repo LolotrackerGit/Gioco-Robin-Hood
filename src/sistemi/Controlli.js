@@ -15,7 +15,6 @@
 class Controlli {
   constructor(scene) {
     this.scene = scene;
-    this.miraTastiera = Salvataggio.leggiImpostazioni().miraTastiera;
     this.angoloMira = 0;      // in radianti (0 = verso destra)
     this.richiestaCambio = null; // cambio di freccia chiesto con la rotellina
 
@@ -37,15 +36,18 @@ class Controlli {
     });
   }
 
+  // true = mira con le frecce direzionali (si legge dalle impostazioni)
+  get miraTastiera() {
+    return Impostazioni.valori.miraTastiera;
+  }
+
   // Tasti T (mira) e M (audio): da chiamare a ogni fotogramma.
   // Restituisce un messaggio da mostrare, oppure null.
   tastiSpeciali() {
     const JD = Phaser.Input.Keyboard.JustDown;
     if (JD(this.tasti.t)) {
-      this.miraTastiera = !this.miraTastiera;
-      const imp = Salvataggio.leggiImpostazioni();
-      imp.miraTastiera = this.miraTastiera;
-      Salvataggio.scriviImpostazioni(imp);
+      Impostazioni.valori.miraTastiera = !Impostazioni.valori.miraTastiera;
+      Impostazioni.salva();
       return this.miraTastiera ? 'Mira con le frecce direzionali (T per tornare al mouse)' : 'Mira con il mouse (T per usare la tastiera)';
     }
     if (JD(this.tasti.m)) {

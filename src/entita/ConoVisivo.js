@@ -76,9 +76,15 @@ class ConoVisivo {
       const l = this.scene.griglia.lunghezzaRaggio(g.x, g.y, a, dist);
       punti.push({ x: g.x + Math.cos(a) * l, y: g.y + Math.sin(a) * l });
     }
-    gr.fillStyle(colore, alpha);
+    // accessibilità: con "alto contrasto" il cono è più pieno e ha un bordo scuro
+    const contrasto = Impostazioni.valori.altoContrasto;
+    gr.fillStyle(colore, contrasto ? Math.min(0.5, alpha * 2.4) : alpha);
     gr.fillPoints(punti, true);
-    gr.lineStyle(1, colore, alpha + 0.15);
+    if (contrasto) {
+      gr.lineStyle(3, 0x000000, 0.8);
+      gr.strokePoints(punti, true);
+    }
+    gr.lineStyle(contrasto ? 2 : 1, colore, contrasto ? 1 : alpha + 0.15);
     gr.strokePoints(punti, true);
   }
 

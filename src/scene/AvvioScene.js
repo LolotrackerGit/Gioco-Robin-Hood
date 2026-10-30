@@ -16,7 +16,7 @@ class AvvioScene extends Phaser.Scene {
     // 2. Crea le animazioni di camminata per ogni personaggio.
     //    I fotogrammi sono: 0 = fermo, 1 e 2 = passi
     const personaggi = ['robin', 'robin_mendicante', 'guardia', 'balestriere', 'carceriere',
-      'sceriffo', 'john', 'tuck', 'gisborne', 'popolano', 'marian'];
+      'sceriffo', 'john', 'tuck', 'gisborne', 'popolano', 'marian', 're'];
     personaggi.forEach((chiave) => {
       this.anims.create({
         key: chiave + '_cammina',

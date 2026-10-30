@@ -45,17 +45,19 @@ class MenuScene extends Phaser.Scene {
     const voci = [
       ['Gioca', () => this.mostraDifficolta(), false],
       ['Continua', () => this.continua(), !Partita.esisteSalvataggio()],
-      ['Diario di Robin', () => this.scene.start('Diario', {}), false]
+      ['Diario di Robin', () => this.scene.start('Diario', {}), false],
+      ['Impostazioni', () => this.scene.start('Impostazioni', {}), false]
     ];
     const pulsanti = voci.map(([testo, azione, disabilitato], i) =>
-      Interfaccia.pulsante(this, 480, 215 + i * 56, testo, azione, { disabilitato, larghezza: 280, altezza: 44 }));
+      Interfaccia.pulsante(this, 480, 200 + i * 50, testo, azione, { disabilitato, larghezza: 280, altezza: 42 }));
     this.elementi.push(...pulsanti);
     Interfaccia.menuTastiera(this, pulsanti);
   }
 
   mostraDifficolta() {
-    // IMPORTANTE: l'audio parte solo ora, dopo il clic su "Gioca" (serve per Safari)
+    // IMPORTANTE: audio e voce partono solo ora, dopo il clic su "Gioca" (serve per Safari)
     Suoni.avvia();
+    Voce.inizializza();
     Suoni.suona('click');
     Suoni.musica('foresta');
 
@@ -85,20 +87,13 @@ class MenuScene extends Phaser.Scene {
 
   nuovaPartita(livello) {
     Partita.nuova(livello);
-    // Introduzione storica prima di arrivare all'accampamento
-    this.scene.start('Caricamento', {
-      destinazione: 'Accampamento',
-      titolo: 'Inghilterra, 1193',
-      testo:
-        'Re Riccardo Cuor di Leone, di ritorno dalla Terza Crociata, è prigioniero dell\'imperatore Enrico VI. ' +
-        'Per pagare il riscatto, gli uomini del principe Giovanni e lo Sceriffo di Nottingham ' +
-        'impongono tasse pesantissime.\n\n' +
-        'Nella foresta di Sherwood vive un fuorilegge che ha deciso di opporsi: Robin Hood.'
-    });
+    // Cutscene iniziale, poi l'accampamento
+    this.scene.start('Cutscene', { quadri: CUTSCENE_INIZIALE, poi: 'Accampamento' });
   }
 
   continua() {
     Suoni.avvia();
+    Voce.inizializza();
     Suoni.musica('foresta');
     if (Partita.carica()) {
       this.scene.start('Caricamento', { destinazione: 'Accampamento', titolo: 'Sherwood' });

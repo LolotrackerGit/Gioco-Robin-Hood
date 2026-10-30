@@ -107,6 +107,11 @@ class MissioneFinale extends MissioneBase {
     return 'sconfiggi lo Sceriffo di Nottingham!';
   }
 
+  // Freccia guida: lo Sceriffo
+  obiettivoGuida() {
+    return this.sceriffo.stato === 'sconfitto' ? null : this.sceriffo;
+  }
+
   // Obiettivo speciale "Intoccabile"
   controllaSpeciale() {
     return this.robin.dannoSubito <= 2;

@@ -73,7 +73,9 @@ class Freccia {
     if (this.daGiocatore) {
       const bersagli = this.scene.bersagliColpibili();
       for (const b of bersagli) {
-        if (Phaser.Math.Distance.Between(this.x, this.y, b.x, b.y - 2) < (b.raggioColpo || 8)) {
+        // con la mira assistita i bersagli sono un po' più "grandi" da colpire
+        const raggio = (b.raggioColpo || 8) + (Impostazioni.valori.miraAssistita ? 4 : 0);
+        if (Phaser.Math.Distance.Between(this.x, this.y, b.x, b.y - 2) < raggio) {
           if (this.tipo === 'fumogena') {
             this.scene.creaFumo(this.x, this.y);
           } else if (this.tipo !== 'corda') {

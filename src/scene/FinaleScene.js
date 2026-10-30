@@ -26,6 +26,7 @@ class FinaleScene extends Phaser.Scene {
 
     this.illustrazione();
     Interfaccia.testo(this, 350, 80, finale.testo, 18, COSTANTI.CSS.pergamena, { larghezza: 570, interlinea: 6 });
+    Interfaccia.leggi(finale.titolo + '. ' + finale.testo);
 
     // Cosa successe davvero
     Interfaccia.pannello(this, 40, 214, 880, 76, 'pergamena');

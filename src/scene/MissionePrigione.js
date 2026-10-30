@@ -113,6 +113,19 @@ class MissionePrigione extends MissioneBase {
     return 'fuggi con John dall\'uscita a ovest della città';
   }
 
+  // Freccia guida: carceriere (o la chiave caduta), poi la cella, poi l'uscita
+  obiettivoGuida() {
+    if (!this.robinHaChiave && !this.johnLibero) {
+      const chiave = this.oggetti.find((o) => o.tipo === 'chiave');
+      return chiave || this.carceriere;
+    }
+    if (!this.johnLibero) {
+      const p = this.porteCella[0];
+      return { x: p.x + 8, y: p.y + 10 };
+    }
+    return this.uscitaPiuVicina();
+  }
+
   // Obiettivo speciale "Mani leggere": la chiave è stata sfilata con il borseggio
   controllaSpeciale() {
     return this.speciale && this.carceriere.stato !== 'morta';

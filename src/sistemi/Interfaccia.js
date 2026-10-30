@@ -119,7 +119,11 @@ const Interfaccia = {
     if (!pulsante.abilitato) testo.setColor('#77706a');
 
     zona.setInteractive({ useHandCursor: pulsante.abilitato });
-    zona.on('pointerover', () => pulsante.evidenzia(true));
+    zona.on('pointerover', () => {
+      pulsante.evidenzia(true);
+      // accessibilità: la voce legge il nome del pulsante
+      if (Impostazioni.valori.leggiPulsanti && pulsante.abilitato) Voce.parla(opzioni.frase || etichetta);
+    });
     zona.on('pointerout', () => pulsante.evidenzia(false));
     zona.on('pointerdown', () => pulsante.esegui());
     return pulsante;
@@ -178,6 +182,12 @@ const Interfaccia = {
     }
     contenitore.add(scene.add.rectangle(0, 0, COSTANTI.LARGHEZZA, COSTANTI.ALTEZZA, 0x0b130d, scurisci === undefined ? 0.55 : scurisci).setOrigin(0));
     return contenitore;
+  },
+
+  // Fa leggere un testo alla sintesi vocale (se è attiva nelle impostazioni).
+  // inCoda = true: aspetta che finisca la frase in corso invece di interromperla.
+  leggi(testo, inCoda) {
+    if (Impostazioni.valori.sintesiVocale) Voce.parla(testo, { nonInterrompere: !!inCoda });
   },
 
   // Piccola dissolvenza e cambio scena

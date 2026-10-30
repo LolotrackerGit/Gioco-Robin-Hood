@@ -55,17 +55,5 @@ const Salvataggio = {
     if (vecchio && vecchio.punteggio >= risultato.punteggio) return false;
     this.scrivi('record', risultato);
     return true;
-  },
-
-  // ---------- IMPOSTAZIONI ----------
-  // Si cambiano durante il gioco: T = tipo di mira, M = audio sì/no
-  leggiImpostazioni() {
-    const predefinite = { miraTastiera: false, audio: true };
-    const salvate = this.leggi('impostazioni', {});
-    return Object.assign(predefinite, salvate);
-  },
-
-  scriviImpostazioni(impostazioni) {
-    this.scrivi('impostazioni', impostazioni);
   }
 };

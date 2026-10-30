@@ -31,7 +31,7 @@ const Suoni = {
       this.ctx = new ContestoAudio();
       this.volumeGenerale = this.ctx.createGain();
       this.volumeGenerale.connect(this.ctx.destination);
-      this.impostaVolume(Salvataggio.leggiImpostazioni().audio ? 0.6 : 0);
+      this.impostaVolume(Impostazioni.valori.volume);
       this.creaRumore();
       if (this.ctx.state === 'suspended') this.ctx.resume();
     } catch (errore) {
@@ -46,12 +46,12 @@ const Suoni = {
 
   // Tasto M: accende o spegne tutto l'audio (la scelta viene salvata)
   alternaAudio() {
-    const imp = Salvataggio.leggiImpostazioni();
-    imp.audio = !imp.audio;
-    Salvataggio.scriviImpostazioni(imp);
-    this.impostaVolume(imp.audio ? 0.6 : 0);
-    if (!imp.audio) this.fermaMusica();
-    return imp.audio;
+    const v = Impostazioni.valori;
+    v.volume = v.volume > 0 ? 0 : 0.6;
+    Impostazioni.salva();
+    this.impostaVolume(v.volume);
+    if (v.volume === 0) this.fermaMusica();
+    return v.volume > 0;
   },
 
   // Prepara 1 secondo di "rumore bianco" (serve per fruscii e colpi)
@@ -192,7 +192,7 @@ const Suoni = {
   musica(nome) {
     if (!this.ctx || this.musicaAttiva === nome) return;
     this.fermaMusica();
-    if (!Salvataggio.leggiImpostazioni().audio) return;
+    if (!Impostazioni.valori.musica || Impostazioni.valori.volume === 0) return;
     this.musicaAttiva = nome;
     this.passoMusica = 0;
     this.prossimaNota = this.ctx.currentTime + 0.1;

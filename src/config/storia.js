@@ -108,6 +108,65 @@ const DIARIO = [
   }
 ];
 
+// Cutscene iniziale (disegnata in scene/CutsceneScene.js)
+const CUTSCENE_INIZIALE = [
+  { scena: 'castello', testo: 'Inghilterra, 1193. Re Riccardo Cuor di Leone, di ritorno dalla Terza Crociata, è prigioniero dell\'imperatore Enrico VI.' },
+  { scena: 'tasse', testo: 'Per pagare il riscatto, il principe Giovanni e lo Sceriffo di Nottingham impongono tasse pesantissime alla gente povera.' },
+  { scena: 'foresta', testo: 'Nella foresta di Sherwood vive un fuorilegge con i suoi compagni: Robin Hood.' },
+  { scena: 'carro', testo: 'Robin ha deciso di opporsi allo Sceriffo e di restituire al popolo quello che gli è stato tolto.' }
+];
+
+// Cutscene di ogni missione.
+//   inizio: spiega la situazione, cosa va fatto e qual è l'obiettivo
+//   fine:   (solo se la missione riesce) cosa hai ottenuto e cosa succede adesso
+// "scena" sceglie la scenografia in CutsceneScene.js; "icona" serve ai quadri "obiettivo".
+const CUTSCENE_MISSIONI = {
+  convoglio: {
+    inizio: [
+      { scena: 'carro', testo: 'Un carro carico delle tasse per il riscatto del re attraversa la foresta di Sherwood, scortato dalle guardie.' },
+      { scena: 'foresta', testo: 'Robin e Little John decidono di fermarlo: quell\'oro è stato preso alle famiglie più povere.' },
+      { scena: 'obiettivo', icona: 'sacco', testo: 'Obiettivo: ruba almeno 3 sacchi dal carro e fuggi dall\'uscita a sud. Puoi agire di nascosto, combattere o usare l\'astuzia.' }
+    ],
+    fine: [
+      { scena: 'bottino', testo: 'Il colpo è riuscito: Robin torna nella foresta con i sacchi delle tasse.' },
+      { scena: 'obiettivo', icona: 'forziere', testo: 'Missione completata. All\'accampamento decidi quanto oro dare ai villaggi, poi scegli la prossima missione.' }
+    ]
+  },
+  prigione: {
+    inizio: [
+      { scena: 'prigione', testo: 'Little John è stato catturato. Lo Sceriffo lo ha chiuso nelle prigioni del castello di Nottingham.' },
+      { scena: 'citta', testo: 'La città è piena di guardie. Al mercato ci sono stracci da mendicante, e sui tetti ci sono anelli per la corda.' },
+      { scena: 'obiettivo', icona: 'chiave', testo: 'Obiettivo: prendi la chiave al carceriere vestito di nero, apri la cella e porta John fuori dalla città, a ovest.' }
+    ],
+    fine: [
+      { scena: 'liberati', testo: 'Little John è libero! I due amici escono dalla città e tornano nella foresta.' },
+      { scena: 'obiettivo', icona: 'john', testo: 'Missione completata. Nello scontro finale Little John combatterà al tuo fianco.' }
+    ]
+  },
+  torneo: {
+    inizio: [
+      { scena: 'torneo', testo: 'Lo Sceriffo organizza una gara di tiro con l\'arco. Il premio è una freccia d\'oro.' },
+      { scena: 'travestimento', testo: 'È una trappola per catturare Robin. Ma travestito da mendicante nessuno lo riconoscerà.' },
+      { scena: 'obiettivo', icona: 'bersaglio', testo: 'Obiettivo: fai più punti di Guy di Gisborne in tre manche. Attento al vento, e tieni SHIFT per fermare il mirino.' }
+    ],
+    fine: [
+      { scena: 'vittoriaTorneo', testo: 'Robin vince la freccia d\'oro! Dopo la gara, un servo del castello gli rivela un segreto.' },
+      { scena: 'obiettivo', icona: 'anello', testo: 'Missione completata. C\'è un passaggio segreto nelle mura a ovest del castello: ti servirà nello scontro finale.' }
+    ]
+  },
+  finale: {
+    inizio: [
+      { scena: 'castelloEsterno', testo: 'È arrivato il momento. Robin va al castello di Nottingham per affrontare lo Sceriffo.' },
+      { scena: 'sala', testo: 'Lo Sceriffo aspetta nella sala grande, protetto dalle sue guardie e dai balestrieri.' },
+      { scena: 'obiettivo', icona: 'sceriffo', testo: 'Obiettivo: entra nel castello e sconfiggi lo Sceriffo. Se hai vinto il torneo, usa il passaggio segreto a ovest.' }
+    ],
+    fine: [
+      { scena: 'sceriffoSconfitto', testo: 'Lo Sceriffo è sconfitto e le guardie gettano le armi. L\'oro del riscatto torna al popolo.' },
+      { scena: 'festa', testo: 'La storia è finita. Ora scopri come ti ricorderà la gente di Sherwood.' }
+    ]
+  }
+};
+
 // Frasi brevi mostrate durante le schermate di caricamento
 const CURIOSITA = [
   'Robin Hood è citato per la prima volta nel poema "Piers Plowman" (circa 1377).',

@@ -50,9 +50,13 @@ class HUDScene extends Phaser.Scene {
     this.testoStato = Interfaccia.testo(this, 480, 50, '', 13, COSTANTI.CSS.verdeChiaro, { align: 'center' }).setOrigin(0.5, 0);
 
     // ---- obiettivo e suggerimento (in basso) ----
-    this.testoObiettivo = Interfaccia.testo(this, 480, 520, '', 15, COSTANTI.CSS.pergamena, { align: 'center' }).setOrigin(0.5);
-    this.sfondoSugg = this.add.rectangle(480, 480, 300, 28, 0x000000, 0.65).setStrokeStyle(1, 0xf2c14e);
-    this.testoSugg = Interfaccia.testo(this, 480, 480, '', 15, COSTANTI.CSS.oro).setOrigin(0.5);
+    // (con "testo grande" nelle impostazioni questi testi sono più grandi)
+    const grande = Impostazioni.valori.testoGrande;
+    this.sfondoObiettivo = this.add.rectangle(480, 520, 900, grande ? 34 : 26, 0x000000, 0.5);
+    this.testoObiettivo = Interfaccia.testo(this, 480, 520, '', Impostazioni.dimensione(15), COSTANTI.CSS.pergamena, { align: 'center' }).setOrigin(0.5);
+    this.sfondoSugg = this.add.rectangle(480, grande ? 474 : 480, 300, grande ? 36 : 28, 0x000000, 0.65).setStrokeStyle(1, 0xf2c14e);
+    this.testoSugg = Interfaccia.testo(this, 480, grande ? 474 : 480, '', Impostazioni.dimensione(15), COSTANTI.CSS.oro).setOrigin(0.5);
+    this.ultimoObiettivo = '';
 
     // ---- barra della salute del boss ----
     this.barraBoss = this.add.graphics();
@@ -71,13 +75,14 @@ class HUDScene extends Phaser.Scene {
   aggiungiMessaggio(testo, colore) {
     // niente doppioni uguali di fila
     if (this.messaggi.length && this.messaggi[this.messaggi.length - 1].text === testo) return;
-    const t = Interfaccia.testo(this, 480, 0, testo, 17, colore, { align: 'center' }).setOrigin(0.5);
+    const t = Interfaccia.testo(this, 480, 0, testo, Impostazioni.dimensione(17), colore, { align: 'center', larghezza: 900 }).setOrigin(0.5);
+    Interfaccia.leggi(testo, true); // accessibilità: la voce legge il messaggio
     this.messaggi.push(t);
     if (this.messaggi.length > 3) this.messaggi.shift().destroy();
     this.tweens.add({
       targets: t,
       alpha: 0,
-      delay: 2600,
+      delay: Impostazioni.durataMessaggio(2600),
       duration: 500,
       onComplete: () => {
         this.messaggi = this.messaggi.filter((m) => m !== t);
@@ -134,14 +139,20 @@ class HUDScene extends Phaser.Scene {
     this.testoStato.setText(stati.join('   '));
 
     // obiettivo e suggerimento
-    this.testoObiettivo.setText('Obiettivo: ' + m.testoObiettivo());
+    const obiettivo = 'Obiettivo: ' + m.testoObiettivo();
+    this.testoObiettivo.setText(obiettivo);
+    // la voce legge l'obiettivo ogni volta che cambia
+    if (obiettivo !== this.ultimoObiettivo) {
+      this.ultimoObiettivo = obiettivo;
+      Interfaccia.leggi(obiettivo, true);
+    }
     const sugg = m.interazioneAttuale ? '[E] ' + m.interazioneAttuale.testo : (r.azione ? r.azione.testo + '...' : '');
     this.testoSugg.setText(sugg);
     this.sfondoSugg.setVisible(sugg !== '');
     this.sfondoSugg.width = this.testoSugg.width + 24;
 
     // messaggi impilati dall'alto
-    this.messaggi.forEach((t, i) => t.setY(125 + i * 24));
+    this.messaggi.forEach((t, i) => t.setY(125 + i * Impostazioni.dimensione(24)));
 
     // barra del boss
     this.barraBoss.clear();

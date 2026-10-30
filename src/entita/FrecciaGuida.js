@@ -19,7 +19,7 @@ class FrecciaGuida {
     const g = this.grafica;
     g.clear();
     this.cerchio.clear();
-    if (!obiettivo || !Accessibilita.valori.frecciaGuida) return;
+    if (!obiettivo || !Impostazioni.valori.frecciaGuida) return;
 
     // cerchio che pulsa sull'obiettivo
     const t = this.scene.time.now / 1000;

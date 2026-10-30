@@ -81,6 +81,9 @@ class RiepilogoScene extends Phaser.Scene {
       nota = 'Lo Sceriffo ti ha preso un terzo dell\'oro.\nI tuoi compagni ti hanno fatto scappare: puoi riprovare.';
     }
     Interfaccia.testo(this, 480, 380, nota, 16, COSTANTI.CSS.pergamena, { align: 'center' }).setOrigin(0.5);
+    const ottenuti = obiettivi.filter((o) => o.ottenuto).map((o) => o.nome);
+    Interfaccia.leggi((e.successo ? 'Missione completata. ' : titoloSconfitta + '. ') + missione.titolo + '. ' +
+      (ottenuti.length ? 'Obiettivi extra ottenuti: ' + ottenuti.join(', ') + '. ' : '') + nota);
 
     const etichetta = this.idMissione === 'finale' ? 'Continua' : 'Torna all\'accampamento';
     const pulsante = Interfaccia.pulsante(this, 480, 490, etichetta, () => this.continua(), { larghezza: 320 });
@@ -88,10 +91,18 @@ class RiepilogoScene extends Phaser.Scene {
   }
 
   continua() {
-    if (this.idMissione === 'finale') {
-      Interfaccia.vaiA(this, 'Finale', { vinto: this.esito.successo });
+    const ritorno = { destinazione: 'Accampamento', titolo: 'Ritorno a Sherwood' };
+    const poi = this.idMissione === 'finale' ? 'Finale' : 'Caricamento';
+    const datiPoi = this.idMissione === 'finale' ? { vinto: this.esito.successo } : ritorno;
+    if (this.esito.successo) {
+      // missione riuscita: cutscene finale che spiega cosa hai ottenuto e cosa succede adesso
+      Interfaccia.vaiA(this, 'Cutscene', {
+        quadri: CUTSCENE_MISSIONI[this.idMissione].fine,
+        titolo: MISSIONI[this.idMissione].titolo,
+        poi, datiPoi
+      });
     } else {
-      Interfaccia.vaiA(this, 'Caricamento', { destinazione: 'Accampamento', titolo: 'Ritorno a Sherwood' });
+      Interfaccia.vaiA(this, poi, datiPoi);
     }
   }
 }
